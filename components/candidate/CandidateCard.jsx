@@ -6,14 +6,19 @@ import {
   Box,
   Avatar,
   Chip,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
+import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
+import { useCandidates } from "../../context/CandidateContext";
 
 const CandidateCard = memo(
   function CandidateCard({ candidate, onClick }) {
+    const { updateCandidateStage } = useCandidates();
     const {
       attributes,
       listeners,
@@ -23,6 +28,25 @@ const CandidateCard = memo(
       isDragging,
     } = useSortable({ id: candidate.id });
 
+    const handleFastTrack = React.useCallback(
+      (e) => {
+        e.stopPropagation();
+        if (candidate.stage !== "interview" && candidate.stage !== "offer") {
+          updateCandidateStage(candidate.id, "interview");
+        }
+      },
+      [candidate.id, candidate.stage, updateCandidateStage],
+    );
+
+    const onKeyDown = React.useCallback(
+      (e) => {
+        if (e.key.toLowerCase() === "f") {
+          handleFastTrack(e);
+        }
+      },
+      [handleFastTrack],
+    );
+
     const style = {
       transform: CSS.Transform.toString(transform),
       transition,
@@ -30,13 +54,26 @@ const CandidateCard = memo(
       opacity: isDragging ? 0.3 : 1,
     };
 
+    const isFastTrackable =
+      candidate.stage !== "interview" && candidate.stage !== "offer";
+
     return (
       <Box
         ref={setNodeRef}
         style={style}
         {...attributes}
         {...listeners}
-        sx={{ mb: 1, mt: 1 }}
+        onKeyDown={onKeyDown}
+        tabIndex={0}
+        sx={{
+          mb: 1,
+          mt: 1,
+          outline: "none",
+          "&:focus > div > .MuiCard-root": {
+            borderColor: "primary.main",
+            boxShadow: 4,
+          },
+        }}
       >
         <motion.div
           whileHover={{ scale: 1.02, y: -2 }}
@@ -49,9 +86,14 @@ const CandidateCard = memo(
               cursor: "grab",
               "&:active": { cursor: "grabbing" },
               boxShadow: 1,
-              "&:hover": { boxShadow: 4, borderColor: "primary.main" },
+              "&:hover": {
+                boxShadow: 4,
+                borderColor: "primary.main",
+                "& .fast-track-btn": { opacity: 1 },
+              },
               border: "1px solid transparent",
               transition: "border-color 0.2s, box-shadow 0.2s",
+              position: "relative",
             }}
           >
             <CardContent sx={{ p: "16px !important" }}>
@@ -68,7 +110,7 @@ const CandidateCard = memo(
                 >
                   {candidate.name.charAt(0)}
                 </Avatar>
-                <Box>
+                <Box sx={{ flexGrow: 1 }}>
                   <Typography
                     variant="subtitle1"
                     sx={{ fontWeight: 600, lineHeight: 1.2 }}
@@ -89,6 +131,25 @@ const CandidateCard = memo(
                     </Typography>
                   </Box>
                 </Box>
+
+                {isFastTrackable && (
+                  <Tooltip title="Fast-Track to Interview (f)" arrow>
+                    <IconButton
+                      className="fast-track-btn"
+                      size="small"
+                      onClick={handleFastTrack}
+                      sx={{
+                        opacity: { xs: 1, md: 0 },
+                        transition: "opacity 0.2s",
+                        color: "warning.main",
+                        mt: -0.5,
+                        mr: -0.5,
+                      }}
+                    >
+                      <ElectricBoltIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                )}
               </Box>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Chip
