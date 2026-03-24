@@ -97,26 +97,42 @@ const KanbanBoard = memo(function KanbanBoard() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+      <Box 
+        sx={{ 
+          mb: 4, 
+          display: "flex", 
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: "space-between", 
+          alignItems: { xs: "flex-start", sm: "flex-start" },
+          gap: 2
+        }}
+      >
         <Box>
           <Typography
             variant="h5"
-            sx={{ fontWeight: 700, letterSpacing: "-0.5px" }}
+            sx={{ fontWeight: 800, letterSpacing: "-1px" }}
           >
             Recruitment Pipeline
           </Typography>
           <Typography
             variant="body2"
-            sx={{ color: "text.secondary", mt: 0.5, fontSize: "0.9rem" }}
+            sx={{ color: "text.secondary", mt: 0.5, fontSize: "0.95rem" }}
           >
-            Manage and track candidates across the hiring stages. Drag to update
-            status.
+            Manage and track candidates across the hiring stages.
           </Typography>
         </Box>
         <Button 
           variant="contained" 
           onClick={() => setIsAddModalOpen(true)}
-          sx={{ fontWeight: 600, boxShadow: "none", borderRadius: 2 }}
+          fullWidth={false}
+          sx={{ 
+            fontWeight: 700, 
+            boxShadow: "none", 
+            borderRadius: 2.5,
+            px: 3,
+            py: 1,
+            width: { xs: "100%", sm: "auto" }
+          }}
         >
           Add Candidate
         </Button>

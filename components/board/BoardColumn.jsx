@@ -44,8 +44,8 @@ const BoardColumn = memo(
     return (
       <Paper
         sx={{
-          width: 320,
-          minWidth: 320,
+          width: { xs: 280, sm: 320 },
+          minWidth: { xs: 280, sm: 320 },
           bgcolor: isOver ? "action.hover" : "background.default",
           p: 2,
           display: "flex",

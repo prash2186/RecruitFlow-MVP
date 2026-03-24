@@ -28,11 +28,11 @@ export default function RootLayout({ children }) {
                 component="main"
                 sx={{
                   flexGrow: 1,
-                  p: 3,
+                  p: { xs: 2, sm: 3 },
                   display: "flex",
                   flexDirection: "column",
                   height: "calc(100vh - 64px)",
-                  overflow: "hidden",
+                  overflowY: "auto",
                 }}
               >
                 {children}
